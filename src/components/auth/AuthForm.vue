@@ -64,7 +64,7 @@ const toast = useToast()
 async function onSubmit() {
     try {
         // tenta logar o usuário
-        const { data } = await useAxios('post', 'auth/login', {
+        const { data } = await useAxios('post', 'auth/login', true, {
             email: state.value.email,
             password: state.value.password
         });

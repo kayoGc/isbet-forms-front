@@ -1,16 +1,23 @@
 import axios from "axios"
 
-const backUrl = "http://localhost:3000";
+const backUrl = import.meta.env.VITE_BACK_ORIGIN;
 
 // vai fazer chamadas http para o site
-const useAxios = async (method, url, data = null) => {
+const useAxios = async (method, url, auth = false, data = null) => {
     try {
-        const response = await axios({
+        let config = {
             method: method,
             url: `${backUrl}/${url}`,
             data: data,
-            credentials: 'include'
-        });
+        }
+        
+        // só bota headers necessários em autenticação apenas quando necessário
+        if (auth) {
+            config.credentials = "include";
+            config.withCredentials = true;    
+        }
+
+        const response = await axios(config);
 
         // sinaliza que não houve erro
         response.data.error = false;

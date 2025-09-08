@@ -13,6 +13,7 @@ declare module 'vue' {
     ExamForm: typeof import('./src/components/exams/ExamForm.vue')['default']
     Header: typeof import('./src/components/shared/MainHeader.vue')['default']
     MainHeader: typeof import('./src/components/shared/MainHeader.vue')['default']
+    QuestionForm: typeof import('./src/components/exams/QuestionForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TabelaProvas: typeof import('./src/components/exams/TabelaProvas.vue')['default']
@@ -30,6 +31,7 @@ declare module 'vue' {
     ULink: typeof import('./node_modules/@nuxt/ui/dist/runtime/vue/components/Link.vue')['default']
     USelect: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Select.vue')['default']
     UTable: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Table.vue')['default']
+    UTextarea: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Textarea.vue')['default']
     UTooltip: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Tooltip.vue')['default']
   }
 }
