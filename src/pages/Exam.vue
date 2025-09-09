@@ -34,6 +34,16 @@
 import MainHeader from '@/components/shared/MainHeader.vue';
 import ExamForm from '@/components/exams/ExamForm.vue';
 import useSpacingClass from '@/composables/useSpacingClass';
+import useUserStore from '@/stores/user';
+import router from '@/router';
+import { onBeforeMount } from 'vue';
 
 const spacingClass = useSpacingClass();
+const user = useUserStore();
+
+onBeforeMount(() => {
+    if (user.name === '') {
+        router.push('/login');
+    }
+})
 </script>
