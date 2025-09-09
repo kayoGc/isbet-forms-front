@@ -38,6 +38,7 @@ import useAxios from '@/composables/useAxios';
 import useUserStore from '@/stores/user';
 import QuestionForm from './QuestionForm.vue';
 import { onMounted, ref } from 'vue';
+import router from '@/router';
 
 const user = useUserStore();
 
@@ -85,12 +86,37 @@ const questions = ref([]);
  */
 const onSubmit = async () => {
     try {
+        if (user.name === "") {
+            alert("Por favor, entre na sua conta antes de realizar essa ação")
+            throw new Error("Usuário não está logado");
+        }
+        
+        // verifica se tem alguma questão vazia --- solução temporária
+        for (let i = 0; i < questions.value.length; i++) {
+            if (questions.value[i].question.trim() === "") {
+                alert(`A questão ${i + 1} está vazia`)
+                throw new Error(`A questão ${i + 1} está vazia`);
+            }
+            
+            if (questions.value[i].type === "mul") {
+                for (let j = 0; j < questions.value[i].options.length; j++) {
+                    if (questions.value[i].options[j].trim() === "") {
+                        alert(`A alternativa ${j + 1} da questão ${i + 1} está vazia`)
+                        throw new Error(`A alternativa ${j + 1} da questão ${i + 1} está vazia`);
+                    }
+                }
+            }
+        }
+
+
         const result = await useAxios('post', 'exams/', true, {
             author: user.name,
             name: state.value.name,
             available: state.value.available,
             classNum: state.value.classNum
         });
+
+        console.log(result);
 
         if (result.data.error) {
             throw new Error(result.data.message);

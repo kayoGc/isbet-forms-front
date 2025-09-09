@@ -26,11 +26,21 @@
 
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onBeforeMount, ref } from 'vue';
 import MainHeader from '@/components/shared/MainHeader.vue';
 import Card from '@/components/shared/Card.vue';
 import useAxios from '@/composables/useAxios';
 import useSpacingClass from '@/composables/useSpacingClass';
+import useUserStore from '@/stores/user';
+import router from '@/router';
+
+const user = useUserStore();
+
+onBeforeMount(() => {
+    if (user.name === '') {
+        router.push('/login');
+    }
+})
 
 // quando o componente rodar
 onMounted(async () => {
