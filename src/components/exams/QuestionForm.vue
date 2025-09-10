@@ -6,11 +6,13 @@
 
             <!-- Visualização -->
             <div v-if="!question.editing" class="p-2 rounded-xl cursor-pointer hover:bg-gray-100" @click="$emit('editQuestion', index)">
+                
                 <div class="flex justify-between items-center py-2">
                     <h4 class="text-black font-bold text-lg">Questão {{ index + 1 }}</h4>
                     <UButton size="sm" icon="i-lucide-x" variant="ghost" color="error"
                         class="cursor-pointer rounded-full" @click.stop="$emit('removeQuestion', index)" />
                 </div>
+
                 <div class="space-y-2">
                     <div class="text-black">
                         {{ question.question }}
@@ -21,12 +23,22 @@
                             {{ question.type === 'mul' ? 'Múltipla escolha' : 'Dissertativa' }}
                         </span>
                     </div> -->
-                    <div v-if="question.type === 'mul'" class="space-y-2">
+                    <div v-if="question.type === 'mul'" class="space-y-4">
                         <span class="font-semibold text-black">Alternativas:</span>
-                        <div v-for="(opt, index) in question.options" class="text-black">
+
+                        <div 
+                            v-for="(opt, index) in question.options" 
+                            class="text-black flex items-center space-x-2"
+                        >
+                            <UIcon
+                                :name="question.correct.includes(index) ? 'i-lucide-check' : 'i-lucide-x'"
+                                :class="question.correct.includes(index) ? 'text-green-500' : 'text-red-500'"
+                            />                        
+
                             <span class="font-bold">{{ index + 1 }} - </span>
                             <span>{{ opt }}</span>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -62,17 +74,28 @@
                         <!-- input alternativa -->
                         <UFormField v-for="(opt, optIndex) in question.options" :ui="formFieldUi"
                             :label="optIndex === 0 ? 'Alternativas' : null" :name="`options[${optIndex}]`">
-                            <div class="flex space-x-2">
+                            <div class="flex space-x-2 items-center">
+                                
+                                <!-- se a alternativa é a correta -->
+                                <UButton 
+                                    :color="question.correct.includes(optIndex) ? 'primary' : 'error'"
+                                    variant="ghost"
+                                    :icon="question.correct.includes(optIndex) ? 'i-lucide-check' : 'i-lucide-x'"
+                                    class="cursor-pointer rounded-full"
+                                    @click="$emit('changeCorrect', index, optIndex)"
+                                />
 
-                                <span class="text-black">{{ optIndex + 1 }}</span>
                                 <!-- input do texto -->
                                 <UInput type="text" :ui="inputUi" v-model="question.options[optIndex]" class="grow"
                                     placeholder="Texto da alternativa"></UInput>
 
+
                                 <!-- apagar alternativa -->
                                 <UButton variant="ghost" color="error" icon="i-lucide-minus"
                                     class="cursor-pointer rounded-full"
-                                    @click="$emit('removeOption', index, optIndex)" />
+                                    @click="$emit('removeOption', index, optIndex)">
+                                    <span class="hidden md:block">Remover</span>
+                                </UButton>
                             </div>
                         </UFormField>
 

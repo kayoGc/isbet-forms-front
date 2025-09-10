@@ -96,15 +96,11 @@ const getExams = async () => {
 // tabela hash dos icones
 const iconsHash = {
     'author': 'user',
-    'classNum': 'graduation-cap',
-    'available': 'users',
     'questions': 'clipboard-list',
 };
 // tabela hash dos titulos
 const titleHash = {
     'author': 'Autor',
-    'classNum': "Turma",
-    'available': 'Liberada',
     'questions': 'Questões'
 }
 /**
