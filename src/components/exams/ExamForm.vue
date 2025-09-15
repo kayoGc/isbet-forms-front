@@ -177,7 +177,7 @@ const onSubmit = async () => {
         });
 
         // tenta criar as questões
-        const { data: questionsData } = await useAxios('post', 'questions/many', true, {
+        const { data: questionsData } = await useAxios('post', 'questions/batch', true, {
             questions: questions.value
         });
 
