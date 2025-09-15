@@ -45,6 +45,63 @@ import { onMounted, ref } from 'vue';
 import router from '@/router';
 
 const user = useUserStore();
+const props = defineProps({
+    examId: {
+        type: String,
+        default: null
+    }
+});
+let questionsCopy = [];
+let editingFlag = false;
+// guarda os ids de questões removidas
+let removedQuestions = [];
+let editedQuestions = [];
+
+// quando o componente for montado
+onMounted(async () => {
+    if (props.examId) {
+        await fetchExamData();
+        editingFlag = true;
+    }
+})
+
+/**
+ * Vai pegar os dados da prova para edição
+ */
+const fetchExamData = async () => {
+    try {
+        // pega os dados da prova
+        const { data } = await useAxios('get', `exams/${props.examId}`, true);
+        console.log(data);
+
+        // se deu erro ao pegar a prova
+        if (data.error) {
+            throw new Error(data.message);
+        }
+
+        // bota os dados da prova nos states
+        state.value.name = data.result.name;
+        state.value.available = data.result.available;
+
+        // bota as questões no array de questões
+        questions.value = data.result.questions.map((question) => {
+            if (question.type === "dis") {
+                return {
+                    ...question,
+                    editing: false,
+                    options: ["", "", "", ""]
+                }
+            }
+            return {
+                ...question,
+                editing: false
+            }
+        });
+    } catch (err) {
+        alert("Erro ao carregar dados da prova, tente novamente mais tarde. Persistindo contate desenvolvedor.");
+        console.error("Erro carregando dados da prova:", err.message);
+    }
+}
 
 // estilos personalidados no nuxt UI
 const formFieldUi = {
@@ -53,21 +110,6 @@ const formFieldUi = {
 const inputUi = {
     base: ['bg-white text-black py-2']
 }
-// items dos selects
-const classItems = [
-    {
-        label: "Selecione uma turma",
-        value: 0
-    },
-    {
-        label: "Santo Amaro sala 2",
-        value: 1
-    },
-    {
-        label: "Santo Amaro sala 1",
-        value: 2
-    }
-];
 // cuida da validação
 const valiSchema = valibot.object({
     // nome da prova
@@ -127,7 +169,7 @@ const onSubmit = async () => {
 
             // se for dissertativa
             if (question.type === "dis") {
-                // manda um array sem nada nas alternativas
+                // manda um array sem nada nas alternativas, só para poupar espaço mesmo
                 question.options = [];
             }
 
@@ -162,7 +204,6 @@ const onSubmit = async () => {
  * Vai criar uma pergunta
  */
 const addQuestion = () => {
-
     questions.value.push({
         question: "",
         type: "mul",
@@ -177,6 +218,11 @@ const addQuestion = () => {
  * Vai remover a pergunta do array de perguntas
  */
 const removeQuestion = (index) => {
+    // se estiver editando e a pergunta já conter um id (esta no banco)
+    if (editingFlag && questions.value[index]._id)  {
+        removedQuestions.push(questions.value[index]._id);
+    }
+
     questions.value.splice(index, 1);
 }
 
@@ -217,5 +263,4 @@ const changeCorrect = (index, optIndex) => {
         question.correct.push(optIndex);
     }    
 }
-
 </script>

@@ -14,10 +14,10 @@
 
             <!-- cards das provas -->
             <Card 
-                v-for="exam in formatedExams" 
+                v-for="(exam, index) in formatedExams" 
                 :title="exam.title" 
                 :contents="exam.contents"
-                :buttons="buttons"
+                :buttons="buttons[index]"
                 class="mb-2"
             />
         </main>
@@ -37,9 +37,9 @@ import router from '@/router';
 const user = useUserStore();
 
 onBeforeMount(() => {
-    if (user.name === '') {
-        router.push('/login');
-    }
+    // if (user.name === '') {
+    //     router.push('/login');
+    // }
 })
 
 // quando o componente rodar
@@ -55,6 +55,8 @@ onMounted(async () => {
         });
         buttons.value = [];
 
+        console.log(buttons.value);
+
         console.error("Erro na pagina de provas:", err.message);
     }
 });
@@ -64,20 +66,21 @@ const exams = ref([]);
 // provas formatadas para exibir no card
 const formatedExams = ref([]);
 // botões que vão ter no card
-const buttons = ref([
-    {
-        to: '/prova/editar',
-        text: 'Editar',
-        icon: 'square-pen',
-        color: 'error'
-    },
-    {
-        to: '/prova/resposta',
-        text: 'Resultados',
-        icon: 'clipboard',
-        color: 'info'
-    }
-])
+const buttons = ref([]);
+// [
+//     {
+//         to: '/prova/editar',
+//         text: 'Editar',
+//         icon: 'square-pen',
+//         color: 'error'
+//     },
+//     {
+//         to: '/prova/resposta',
+//         text: 'Resultados',
+//         icon: 'clipboard',
+//         color: 'info'
+//     }
+// ]]);
 const spacingClass = useSpacingClass();
 
 /**
@@ -119,7 +122,8 @@ const formatExams = () => {
                 }]   
             });
 
-            buttons.value = [];
+            buttons.value.push([]);
+            return;
         }
 
         // passa por cada prova e vai montar um objeto para passar para o card
@@ -154,6 +158,13 @@ const formatExams = () => {
             }
 
             formatedExams.value.push(obj);
+            // cria os botões com os links de cada prova
+            buttons.value.push([{
+                to: `/exam/${exam._id}`,
+                text: 'Editar',
+                icon: 'square-pen',
+                color: 'error'
+            }])
         }
     } catch (error) {
         throw new Error(`Erro formatando as provas: ${error.message}`);

@@ -18,7 +18,9 @@
                 </div>
                 
                 <div class="p-3 bg-white">
-                    <ExamForm />
+                    <ExamForm 
+                        :examId="examId"
+                    />
                 </div>
             </div>
         </main>
@@ -30,20 +32,22 @@
 /**
  * pagina para criar e editar provas
  */
-
 import MainHeader from '@/components/shared/MainHeader.vue';
 import ExamForm from '@/components/exams/ExamForm.vue';
 import useSpacingClass from '@/composables/useSpacingClass';
 import useUserStore from '@/stores/user';
 import router from '@/router';
-import { onBeforeMount } from 'vue';
+import { useRoute } from 'vue-router';
+import { onBeforeMount, ref } from 'vue';
 
 const spacingClass = useSpacingClass();
 const user = useUserStore();
+const route = useRoute();
+const examId = ref(null);
 
 onBeforeMount(() => {
-    if (user.name === '') {
-        router.push('/login');
+    if (route.params.id) {
+        examId.value = route.params.id;
     }
 })
 </script>

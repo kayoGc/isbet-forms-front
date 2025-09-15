@@ -38,7 +38,8 @@
                 <!-- botões -->
                 <div class="flex flex-col md:flex-row md:justify-end space-x-2 space-y-2" >
                     <u-button 
-                        v-for="button in buttons" 
+                        v-for="button in buttons"
+                        v-if="title !== 'Erro'" 
                         :to="button.to"
                         :icon="`i-lucide-${button.icon}`"
                         :color="button.color"
@@ -54,6 +55,8 @@
 </template>
 
 <script setup>
+// TODO: resolver o problema de quando não tem botões
+
 const props = defineProps({
     title: {
         type: String,
