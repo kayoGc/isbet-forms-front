@@ -45,6 +45,11 @@ onBeforeMount(() => {
 // quando o componente rodar
 onMounted(async () => {
     try {
+        if (user.name === '') {
+            router.push('/login');
+            return;
+        }
+
         await getExams(); 
         formatExams();
     } catch (err) {

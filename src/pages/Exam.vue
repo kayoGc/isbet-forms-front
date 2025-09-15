@@ -49,5 +49,9 @@ onBeforeMount(() => {
     if (route.params.id) {
         examId.value = route.params.id;
     }
+
+    if (user.name === '') {
+        router.push('/login');
+    }
 })
 </script>
