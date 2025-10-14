@@ -19,9 +19,12 @@
 
 <script setup>
 import useUserStore from '@/stores/user';
+import authService from '@/services/auth-service';
+import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
 
 const user = useUserStore();
+const router = useRouter();
 
 // estilos do avatar
 const avatarUi = {
@@ -38,9 +41,23 @@ onMounted(() => {
         { label: user.email ? `Email: ${user.email}` : '?', type: 'label' },
         ],
         [
-            { label: 'Sair', icon: 'i-lucide-log-out', to: '/login' }
+            { label: 'Sair', icon: 'i-lucide-log-out', onSelect: signOut }
         ])
     return;
-})
+});
+
+const signOut = async () => {
+    const { success, error } = await authService.signOut();
+
+    // se conseguiu logar com sucesso
+    if (success) {
+        router.replace('/login');
+        return;
+    }
+
+    // se chegou aqui deu algum erro
+    console.error(`Erro ao sair: ${error}`);
+    alert(`Erro ao sair, recarregue a página e tente novamente. Caso persista contate desenvolvedor.`);
+}
 
 </script>

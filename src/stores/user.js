@@ -3,10 +3,17 @@ import { defineStore } from "pinia";
 const useUserStore = defineStore("user", {
     state: () => {
         return {
-            _id: "",
             name: "",
             email: "",
-            admin: false
+            admin: false,
+            uid: ""
+        }
+    },
+
+    getters: {
+        // retorna se o usuário está logado
+        isLoggedIn: (state) => {
+            return state.uid !== "";
         }
     }
 })

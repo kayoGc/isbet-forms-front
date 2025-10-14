@@ -1,4 +1,4 @@
-<template>
+<template v-if="user.isLoggedIn">
     <div>
         <!-- header -->
         <MainHeader :class="spacingClass"></MainHeader>
@@ -26,7 +26,7 @@
 
 
 <script setup>
-import { onMounted, onBeforeMount, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import MainHeader from '@/components/shared/MainHeader.vue';
 import Card from '@/components/shared/Card.vue';
 import useAxios from '@/composables/useAxios';
@@ -36,21 +36,28 @@ import router from '@/router';
 
 const user = useUserStore();
 
-onBeforeMount(() => {
-    // if (user.name === '') {
-    //     router.push('/login');
-    // }
-})
-
 // quando o componente rodar
 onMounted(async () => {
     try {
-        if (user.name === '') {
-            router.push('/login');
+        console.log("== DEBUG DashboardAdmin ==");
+        
+        // analisa se usuário está logado
+        if (!user.isLoggedIn) {
+            console.log("Usuário não está logado");
+            console.log("Mandando para tela de login...");
+            router.push('/login');    
             return;
         }
 
+        console.log("Usuário logado");
+       
+        console.log("===== Pegando dados =====");
+        // pega as provas
         await getExams(); 
+
+        console.log("===== Provas ok =====");
+
+        // formata as provas para exibir no card
         formatExams();
     } catch (err) {
         // vai botar uma mensagem generica no card
@@ -62,7 +69,7 @@ onMounted(async () => {
 
         console.log(buttons.value);
 
-        console.error("Erro na pagina de provas:", err.message);
+        console.error("Pagina de provas:", err.message);
     }
 });
 
@@ -72,20 +79,6 @@ const exams = ref([]);
 const formatedExams = ref([]);
 // botões que vão ter no card
 const buttons = ref([]);
-// [
-//     {
-//         to: '/prova/editar',
-//         text: 'Editar',
-//         icon: 'square-pen',
-//         color: 'error'
-//     },
-//     {
-//         to: '/prova/resposta',
-//         text: 'Resultados',
-//         icon: 'clipboard',
-//         color: 'info'
-//     }
-// ]]);
 const spacingClass = useSpacingClass();
 
 /**
@@ -97,7 +90,7 @@ const getExams = async () => {
         
         exams.value = data.result;
     } catch (error) {
-        throw new Error(`Erro ao pegar provas: ${error.message}`);
+        throw new Error(`ao pegar provas: ${error.message}`);
     }
 }
 
