@@ -1,23 +1,46 @@
 import axios from "axios"
+import useUserStore from "@/stores/user";
+import authService from "@/services/auth-service";
 
 const backUrl = import.meta.env.VITE_BACK_ORIGIN;
 
 // vai fazer chamadas http para o site
-const useAxios = async (method, url, auth = false, data = null) => {
+const useAxios = async (method, url, auth = false, user = null, data = null) => {
     try {
+        console.log("== DEBUG REQUEST ==");
+
+        console.log("method", method);
+        console.log("url", `${backUrl}/${url}`);
+        console.log("auth", auth);
+
         let config = {
             method: method,
             url: `${backUrl}/${url}`,
             data: data,
         }
         
-        // só bota headers necessários em autenticação apenas quando necessário
+        // Analisa se precisa de autenticação
         if (auth) {
-            config.credentials = "include";
-            config.withCredentials = true;    
+            // analisa se usuário está logado
+            if (!user.isLoggedIn) {
+                throw new Error("Usuário não está logado");
+            }
+            
+            console.log("pegando token...");
+
+            const token = await authService.getToken();
+
+            console.log("token pego com sucesso");
+
+            config.headers = {
+                "Authorization": `Bearer ${token}`
+            }
         }
 
         const response = await axios(config);
+
+        console.log("== DEBUG RESPONSE ==");
+        console.log("status", response.status);
 
         // sinaliza que não houve erro
         response.data.error = false;
@@ -26,7 +49,23 @@ const useAxios = async (method, url, auth = false, data = null) => {
         
         return response;
     } catch (err) {
-        return { data: { error: true, message: `${err.status} - ${err.response.data.message}` } };
+        console.log("Sucesso:", false);
+
+        // se é um erro do axios
+        if (axios.isAxiosError(err)) {
+            console.log("Erro aconteceu no axios");
+
+            let message = "";
+
+            if (err.response.data.message.includes("Email já tem uma conta")) {
+                return { data: { error: true, message: "DUPLICATE" }}
+            }
+
+            return { data: { error: true, message: err.response.data.message } }
+        }
+
+        console.log("Erro aconteceu fora do axios");
+        return { data: { error: true, message: `Erro no codigo: ${err.message}`}}
     }
 }
 

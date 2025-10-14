@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="user.isLoggedIn">
         <MainHeader :class="spacingClass" />
 
         <!-- conteudo principal -->
@@ -46,12 +46,21 @@ const route = useRoute();
 const examId = ref(null);
 
 onBeforeMount(() => {
+    console.log("== DEBUG Exam ==");
+
+    // verifica se o usuário não está logado
+    if (!user.isLoggedIn) {
+        console.log("Usuário não está logado");
+        console.log("Mandando para login...");
+        router.push('/login');
+    }
+
+    console.log("Usuário logado");
+
     if (route.params.id) {
         examId.value = route.params.id;
     }
 
-    if (user.name === '') {
-        router.push('/login');
-    }
-})
+    console.log("== componente iniciado com sucessso ==");
+});
 </script>
