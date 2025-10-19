@@ -21,10 +21,10 @@ const useAxios = async (method, url, auth = false, user = null, data = null) => 
         
         // Analisa se precisa de autenticação
         if (auth) {
-            // analisa se usuário está logado
-            if (!user.isLoggedIn) {
-                throw new Error("Usuário não está logado");
-            }
+            // // analisa se usuário está logado
+            // if (!user.isLoggedIn) {
+            //     throw new Error("Usuário não está logado");
+            // }
             
             console.log("pegando token...");
 
@@ -54,12 +54,6 @@ const useAxios = async (method, url, auth = false, user = null, data = null) => 
         // se é um erro do axios
         if (axios.isAxiosError(err)) {
             console.log("Erro aconteceu no axios");
-
-            let message = "";
-
-            if (err.response.data.message.includes("Email já tem uma conta")) {
-                return { data: { error: true, message: "DUPLICATE" }}
-            }
 
             return { data: { error: true, message: err.response.data.message } }
         }

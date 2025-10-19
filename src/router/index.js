@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import DasboardAdmin from '@/pages/DasboardAdmin.vue';
 import AuthPage from '@/pages/AuthPage.vue';
 import Exam from '@/pages/Exam.vue';
+import Exams from '@/pages/Exams.vue';
+import Students from '@/pages/Students.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -14,7 +16,7 @@ const router = createRouter({
     // pagina de provas
     {
       path: "/",
-      component: DasboardAdmin
+      component: Exams
     },
     // pagina de criar / editar provas
     {
@@ -25,6 +27,10 @@ const router = createRouter({
     {
       path: "/exam/:id",
       component: Exam
+    },
+    {
+      path: '/students',
+      component: Students
     }
   ],
 })

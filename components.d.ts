@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AuthForm: typeof import('./src/components/auth/AuthForm.vue')['default']
     Card: typeof import('./src/components/shared/Card.vue')['default']
+    EditStudent: typeof import('./src/components/students/EditStudent.vue')['default']
     ExamForm: typeof import('./src/components/exams/ExamForm.vue')['default']
     Header: typeof import('./src/components/shared/MainHeader.vue')['default']
     MainHeader: typeof import('./src/components/shared/MainHeader.vue')['default']
@@ -17,6 +18,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TabelaProvas: typeof import('./src/components/exams/TabelaProvas.vue')['default']
+    UAccordion: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Accordion.vue')['default']
     UApp: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
     UAvatar: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Avatar.vue')['default']
     UButton: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
@@ -29,6 +31,7 @@ declare module 'vue' {
     UIcon: typeof import('./node_modules/@nuxt/ui/dist/runtime/vue/components/Icon.vue')['default']
     UInput: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Input.vue')['default']
     ULink: typeof import('./node_modules/@nuxt/ui/dist/runtime/vue/components/Link.vue')['default']
+    UModal: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Modal.vue')['default']
     USelect: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Select.vue')['default']
     UTable: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Table.vue')['default']
     UTextarea: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Textarea.vue')['default']

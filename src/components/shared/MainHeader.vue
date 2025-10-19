@@ -12,7 +12,6 @@
             </div>
         </UDropdownMenu>
 
-
     </header>
 
 </template>
@@ -41,7 +40,11 @@ onMounted(() => {
         { label: user.email ? `Email: ${user.email}` : '?', type: 'label' },
         ],
         [
-            { label: 'Sair', icon: 'i-lucide-log-out', onSelect: signOut }
+            { label: "Provas", type: 'link', to: '/', color: 'error', icon: 'i-lucide-clipboard'},
+            { label: "Alunos", type: 'link', to: '/students', color: 'error', icon: 'i-lucide-users'}
+        ],
+        [
+            { label: 'Sair', icon: 'i-lucide-log-out', onSelect: signOut, color: 'error', class: 'cursor-pointer'}
         ])
     return;
 });
