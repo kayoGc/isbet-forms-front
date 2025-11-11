@@ -33,7 +33,7 @@ class AuthService {
             }
 
             // faz requisição
-            const { data } = await useAxios("post", "auth/register", false, null, {
+            const { data } = await useAxios("post", "auth/register", false, {
                 name: name,
                 password: password,
                 email: email

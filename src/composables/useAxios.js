@@ -5,7 +5,7 @@ import authService from "@/services/auth-service";
 const backUrl = import.meta.env.VITE_BACK_ORIGIN;
 
 // vai fazer chamadas http para o site
-const useAxios = async (method, url, auth = false, user = null, data = null) => {
+const useAxios = async (method, url, auth = false, data = null) => {
     try {
         console.log("== DEBUG REQUEST ==");
 
@@ -42,10 +42,14 @@ const useAxios = async (method, url, auth = false, user = null, data = null) => 
         console.log("== DEBUG RESPONSE ==");
         console.log("status", response.status);
 
+        if (typeof response.data === 'string') {
+            response.data = {};
+        }
+
         // sinaliza que não houve erro
-        response.data.error = false;
+        response.data['error'] = false;
         // bota o codigo status na resposta
-        response.data.statusCode = response.status;
+        response.data['statusCode'] = response.status;
         
         return response;
     } catch (err) {
@@ -59,6 +63,7 @@ const useAxios = async (method, url, auth = false, user = null, data = null) => 
         }
 
         console.log("Erro aconteceu fora do axios");
+        console.error(err);
         return { data: { error: true, message: `Erro no codigo: ${err.message}`}}
     }
 }
