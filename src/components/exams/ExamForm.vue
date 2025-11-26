@@ -97,7 +97,7 @@ onMounted(async () => {
 const fetchExamData = async () => {
     try {
         // pega os dados da prova
-        const { data } = await useAxios('get', `exams/${props.examId}`, true, user);
+        const { data } = await useAxios('get', `exams/${props.examId}`, true);
 
         // se deu erro ao pegar a prova
         if (data.error) {
@@ -185,7 +185,7 @@ const onSubmit = async () => {
  */
 const handleSave = async () => {
     // cria a prova
-    const { data } = await useAxios('post', 'exams/', true, user, {
+    const { data } = await useAxios('post', 'exams/', true, {
         author: user.name,
         name: state.value.name,
         available: state.value.available,
@@ -202,7 +202,7 @@ const handleSave = async () => {
     prepareQuestions(examId);
     
     // tenta criar as questões
-    const { data: questionsData } = await useAxios('post', 'questions/batch', true, user, {
+    const { data: questionsData } = await useAxios('post', 'questions/batch', true, {
         questions: questions.value
     });
     
@@ -227,7 +227,7 @@ const handleEdit = async () => {
     let updateQ = questions.value.filter((question) => editedQuestions.includes(question._id));
     if (updateQ.length > 0) {
         // faz requisição
-        const { data: updateData } = await useAxios('put', 'questions/', true, user, {
+        const { data: updateData } = await useAxios('put', 'questions/', true, {
             questions: updateQ
         });
         // lida com erro
@@ -239,7 +239,7 @@ const handleEdit = async () => {
     // vai remover as questões apagadas
     if (removedQuestions.length > 0) {
         // faz requisição
-        const { data: deleteData } = await useAxios('delete', 'questions/', true, user, {
+        const { data: deleteData } = await useAxios('delete', 'questions/', true, {
             ids: removedQuestions,
             examId: exam.value._id
         });
@@ -255,7 +255,7 @@ const handleEdit = async () => {
     
     // vai atualizar o objeto da prova se necessário
     if (isExamDiferent(examData)) {
-        const { data: putExamData } = await useAxios("put", `exams/${examData._id}`, true, user, examData);
+        const { data: putExamData } = await useAxios("put", `exams/${examData._id}`, true, examData);
 
         if (putExamData.error) {
             throw new Error("Erro atualizando prova:", putExamData.message);
@@ -265,7 +265,8 @@ const handleEdit = async () => {
     // vai adicionar novas questões
     let addedQ = questions.value.filter((question) => !question._id);
     if (addedQ.length > 0) {
-        const { data: addData } = await useAxios('post', 'questions/batch', true, user, {
+
+        const { data: addData } = await useAxios('post', 'questions/batch', true, {
             questions: addedQ
         });
 

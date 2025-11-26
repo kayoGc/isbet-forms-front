@@ -43,7 +43,8 @@
                         :to="button.to"
                         :icon="`i-lucide-${button.icon}`"
                         :color="button.color"
-                        class="w-full md:w-auto h-full py-2"
+                        class="w-full md:w-auto h-full py-2 cursor-pointer"
+                        @click="button.onClick"
                     >
                         {{ button.text }}
                     </u-button>

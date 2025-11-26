@@ -116,7 +116,7 @@ const login = async () => {
         user.admin = userData.admin;
 
         // se chegar aqui o usuário logou com sucesso
-        await router.push('/');
+        await router.push('/dashboard_user');
     } catch (err) {
         // o titulo vai aparecer no toast
         const toastProps = {

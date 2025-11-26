@@ -8,8 +8,11 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AnswerQuestion: typeof import('./src/components/exams/AnswerQuestion.vue')['default']
     AuthForm: typeof import('./src/components/auth/AuthForm.vue')['default']
     Card: typeof import('./src/components/shared/Card.vue')['default']
+    copy: typeof import('./src/components/students/moveStudents copy.vue')['default']
+    CreateClass: typeof import('./src/components/students/CreateClass.vue')['default']
     EditStudent: typeof import('./src/components/students/moveStudents.vue')['default']
     ExamForm: typeof import('./src/components/exams/ExamForm.vue')['default']
     Header: typeof import('./src/components/shared/MainHeader.vue')['default']
@@ -18,6 +21,7 @@ declare module 'vue' {
     QuestionForm: typeof import('./src/components/exams/QuestionForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StartExam: typeof import('./src/components/exams/StartExam.vue')['default']
     TabelaProvas: typeof import('./src/components/exams/TabelaProvas.vue')['default']
     UAccordion: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Accordion.vue')['default']
     UApp: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
@@ -25,6 +29,7 @@ declare module 'vue' {
     UButton: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
     UCard: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Card.vue')['default']
     UCheckbox: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Checkbox.vue')['default']
+    UCheckboxGroup: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/CheckboxGroup.vue')['default']
     UContainer: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Container.vue')['default']
     UDropdownMenu: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/DropdownMenu.vue')['default']
     UForm: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Form.vue')['default']
@@ -34,6 +39,7 @@ declare module 'vue' {
     ULink: typeof import('./node_modules/@nuxt/ui/dist/runtime/vue/components/Link.vue')['default']
     UModal: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Modal.vue')['default']
     UProgress: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Progress.vue')['default']
+    URadioGroup: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/RadioGroup.vue')['default']
     USelect: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Select.vue')['default']
     USelectMenu: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/SelectMenu.vue')['default']
     UTable: typeof import('./node_modules/@nuxt/ui/dist/runtime/components/Table.vue')['default']

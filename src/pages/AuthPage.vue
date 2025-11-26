@@ -68,7 +68,7 @@ onMounted(async () => {
 
         console.log("Mandando para dasboard...");
         
-        router.push('/');
+        router.push('/dashboard_user');
 
         // para ter certeza que o programa para aqui
         return;

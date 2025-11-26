@@ -7,7 +7,7 @@
         <main class="bg-gray-300 h-full" :class="spacingClass">
             
             <div class="flex justify-between align-middle items-center pb-2">
-                <h2 class="text-red-600 text-center text-2xl justify-self-center">Alunos</h2>
+                <h2 class="text-red-600 text-center text-2xl justify-self-center">ALUNOS</h2>
 
                 <UButton
                     color="error"
@@ -21,8 +21,21 @@
             <!-- filtros -->
             <div class="flex flex-col gap-2">
                 <div>
-                    <label for="in-class-filter" class="text-black">Turma:</label>
-    
+                    <div class="flex justify-between align-middle gap-2">
+                        <label for="in-class-filter" class="text-black">Turma:</label>
+
+                        
+                        <UButton
+                        color="error"
+                        icon="i-lucide-plus"
+                        label="Criar turma"
+                        class="cursor-pointer"
+                        variant="ghost"
+                        :loading="isTableLoading"
+                        @click="openClassModal"
+                        />    
+                    </div>
+
                     <USelect 
                         id="in-class-filter"
                         :items="selectItems"
@@ -71,6 +84,7 @@ import userService from '@/services/user-service';
 import UButton from '@nuxt/ui/components/Button.vue'
 import UCheckbox from '@nuxt/ui/components/Checkbox.vue'
 import EditStudent from '@/components/students/moveStudents.vue';
+import CreateClass from '@/components/students/CreateClass.vue';
 import classService from '@/services/class-service';
 
 const numOfItems = ref(10);
@@ -82,6 +96,7 @@ const user = useUserStore();
 const users = ref(null);
 const overlay = useOverlay();
 const modal = overlay.create(EditStudent);
+const classModal = overlay.create(CreateClass);
 const selectedUsers = ref([]);
 const recharger = ref(0);
 const isTableLoading = ref(false);
@@ -290,6 +305,21 @@ const openModal = async () => {
     handleModalClose(result.success, result.selClass);
 }
 
+/**
+ * Abre o modal que edita os usuários
+ */
+const openClassModal = async () => {
+    const instance = classModal.open();
+
+    const result = await instance.result;
+
+    // se retornou null usuário fechou antes de qualquer ação
+    if (result === null) {
+        return;
+    }
+
+    handleClassModalClose(result.success);
+}
 
 /**
  * Lida com o fechamento do modal de mover alunos quando tenta mover eles no banco, 
@@ -323,6 +353,37 @@ const handleModalClose = async (result, classId) => {
     if (result) {
         classSelectedId.value = classId;
         await refreshEverything(false);
+    }
+}
+
+/**
+ * Cria um prop falando para o usuário se a criação da turma foi um sucesso ou não
+ * @param success se a criação da turma foi um sucesso
+ */
+const handleClassModalClose = async (success) => {
+    const toast = useToast();
+
+    let toastProps = null
+
+    if (success) {
+        toastProps = {
+            title: 'Turma criada com sucesso!',
+            color: "primary",
+            icon: "i-lucide-check"
+        }
+    } else {
+        toastProps = {
+            title: 'Erro criando turma!',
+            description: "Aconteceu um erro interno, recarregue e tente novamente. Persistindo contate desenvolvedor.",
+            color: "error",
+            icon: "i-lucide-x"
+        }
+    }
+
+    toast.add(toastProps);
+
+    if (success) {
+        await refreshEverything(true);
     }
 }
 

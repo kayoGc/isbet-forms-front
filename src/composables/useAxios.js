@@ -18,6 +18,8 @@ const useAxios = async (method, url, auth = false, data = null) => {
             url: `${backUrl}/${url}`,
             data: data,
         }
+
+        console.log(config);
         
         // Analisa se precisa de autenticação
         if (auth) {

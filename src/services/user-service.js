@@ -1,8 +1,10 @@
 import useAxios from "@/composables/useAxios";
+import { RequestHandler } from "./request-service";
 
-class UserService {
+class UserService extends RequestHandler {
 
     constructor() {
+        super('users');
         this.collectionName = "users";
     }
 
@@ -37,6 +39,22 @@ class UserService {
         }
     }
 
+    async getByUid(uid) {
+        try {
+            console.log("Pegando usuário pelo uid:", uid);
+
+            const { success, data, status, error } = await this.getObjById(uid);
+            
+            if (!success) {
+                throw new Error(`status ${status} -> ${error}`);
+            }
+
+            return { success: true, data: data };
+        } catch (err) {
+            return { success: false, error: `UserService: ${err.message}` };
+        }
+    }
+ 
     /**
      * Atualiza objetos da coleção, também pode ser apenas um objeto
      * @param {Object} objs Objeto que contém os dados das atualizações

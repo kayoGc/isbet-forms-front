@@ -1,8 +1,10 @@
 import useAxios from "@/composables/useAxios";
+import { RequestHandler } from "./request-service";
 
-class ClassService {
+class ClassService extends RequestHandler {
 
     constructor() {
+        super('classes');
         this.collectionName = 'classes';
     }
 
@@ -39,6 +41,29 @@ class ClassService {
             return { success: true, data: data };
         } catch (err) {
             return { success: false, error: `UserService: ${err.message}`};
+        }
+    }
+
+    /**
+     * Vai mandar dados para o banco de dados
+     * @param {Object} data dados que serão mandados para o banco
+     */
+    async post(data) {
+        try {
+            console.log("Enviando nova turma...");
+
+            const { success, status, error } = await this.postObj(data);
+
+            if (!success) {
+                throw new Error(error);
+            }
+
+            console.log("SUCESSO -> Turma enviado com sucesso!");
+            console.log(`status code: ${status}`);
+
+            return { success };
+        } catch (err) {
+            return { success: false, error: `ClassService: ${err.message}` };
         }
     }
 }

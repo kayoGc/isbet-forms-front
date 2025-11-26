@@ -3,8 +3,9 @@ import DashboardUser from '@/pages/DashboardUser.vue';
 import DasboardAdmin from '@/pages/DasboardAdmin.vue';
 import AuthPage from '@/pages/AuthPage.vue';
 import Exam from '@/pages/Exam.vue';
-import Exams from '@/pages/Exams.vue';
 import Students from '@/pages/Students.vue';
+import Answer from '@/pages/Answer.vue';
+import ConfirmationPage from '@/pages/ConfirmationPage.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,14 +16,14 @@ const router = createRouter({
       component: AuthPage
     },
     {
-      path: "/",
+      path: "/dashboard_user",
       component: DashboardUser
     },
     // pagina de provas
-    // {
-    //   path: "/",
-    //   component: DasboardAdmin
-    // },
+    {
+      path: "/",
+      component: DasboardAdmin
+    },
     // pagina de criar / editar provas
     {
       path: "/exam",
@@ -36,6 +37,14 @@ const router = createRouter({
     {
       path: '/students',
       component: Students
+    },
+    {
+      path: '/answer/:id',
+      component: Answer
+    },
+    {
+      path: '/confirmation/:id/:answerExists',
+      component: ConfirmationPage
     }
   ],
 })

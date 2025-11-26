@@ -1,3 +1,227 @@
-<template>
-    <div></div>
+<template v-if="user.isLoggedIn">
+    <div>
+        <!-- header -->
+        <MainHeader :class="spacingClass"></MainHeader>
+
+        <!-- conteudo principal -->
+        <main class="bg-gray-300 h-full" :class="spacingClass">
+            
+            <div class="flex justify-between items-center pb-2">
+                <h2 class="text-red-600 text-center text-2xl justify-self-center">PROVAS</h2>
+
+                <UButton to="/exam" color="error" icon="i-lucide-plus">Criar prova</UButton>
+            </div>
+
+            <!-- cards das provas -->
+            <Card 
+                v-for="(exam, index) in formatedExams" 
+                :title="exam.title" 
+                :contents="exam.contents"
+                :buttons="buttons[index]"
+                class="mb-2"
+            />
+        </main>
+    </div>
 </template>
+
+
+<script setup>
+import { onMounted, ref } from 'vue';
+import MainHeader from '@/components/shared/MainHeader.vue';
+import Card from '@/components/shared/Card.vue';
+import useAxios from '@/composables/useAxios';
+import useSpacingClass from '@/composables/useSpacingClass';
+import useUserStore from '@/stores/user';
+import router from '@/router';
+import StartExam from '@/components/exams/StartExam.vue';
+
+const overlay = useOverlay();
+const modal = overlay.create(StartExam);
+const user = useUserStore();
+
+// quando o componente rodar
+onMounted(async () => {
+    try {
+        console.log("== DEBUG DashboardAdmin ==");
+        
+        // analisa se usuário está logado
+        if (!user.isLoggedIn) {
+            console.log("Usuário não está logado");
+            console.log("Mandando para tela de login...");
+            router.push('/login');    
+            return;
+        }
+
+        console.log("Usuário logado");
+       
+        console.log("===== Pegando dados =====");
+        // pega as provas
+        await getExams(); 
+
+        console.log("===== Provas ok =====");
+
+        // formata as provas para exibir no card
+        formatExams();
+    } catch (err) {
+        // vai botar uma mensagem generica no card
+        formatedExams.value.push({
+            title: 'Erro',
+            contents: [{ icon: 'circle-x', title: 'Sem dados', data: "Aconteceu um erro interno. Se persistir contate desenvolvedor."  }]
+        });
+        buttons.value = [];
+
+        console.log(buttons.value);
+
+        console.error("Pagina de provas:", err.message);
+    }
+});
+
+// provas
+const exams = ref([]);
+// provas formatadas para exibir no card
+const formatedExams = ref([]);
+// botões que vão ter no card
+const buttons = ref([]);
+const spacingClass = useSpacingClass();
+
+/**
+ * Vai pegar as provas e colocar dentro da variavel
+ */
+const getExams = async () => {
+    try {
+        const { data } = await useAxios('get', 'exams/');
+        
+        exams.value = data.result;
+    } catch (error) {
+        throw new Error(`ao pegar provas: ${error.message}`);
+    }
+}
+
+// tabela hash dos icones
+const iconsHash = {
+    'author': 'user',
+    'questions': 'clipboard-list',
+};
+// tabela hash dos titulos
+const titleHash = {
+    'author': 'Autor',
+    'questions': 'Questões'
+}
+/**
+ * Vai formatar as provas para exibir no card
+ */
+const formatExams = () => {    
+    try {
+
+        // se não tiver nenhuma prova
+        if (exams.value.length === 0) {            
+            formatedExams.value.push({
+                title: "Sem provas",
+                contents: [{
+                    title: "Não há provas",
+                    data: "Clique em \"Criar prova\" e crie uma nova."
+                }]   
+            });
+
+            buttons.value.push([]);
+            return;
+        }
+
+        // passa por cada prova e vai montar um objeto para passar para o card
+        for (const exam of exams.value) {
+            let obj = { title: exam.name, contents: [] }    
+        
+            for (const examData of Object.entries(exam)) {
+                const key = examData[0];
+                const value = examData[1];
+                
+                // se não tiver o atributo na tabela hash pula o atributo
+                if (!titleHash[key]) {
+                    continue;
+                }
+
+                let contentObj = { icon: iconsHash[key] || null };
+                contentObj.title = titleHash[key];
+
+                // tem alguns atributos que os dados precisam ser processados antes de mostrar
+                switch (key) {
+                    case 'available':
+                        contentObj.data = value ? 'Sim' : 'Não';
+                        break;
+                    case 'questions':
+                        contentObj.data = value.length;
+                        break;
+                    default:
+                        contentObj.data = value;
+                }
+
+                obj.contents.push(contentObj);
+            }
+
+            formatedExams.value.push(obj);
+            // cria os botões com os links de cada prova
+            buttons.value.push([
+                {
+                    text: 'Liberar',
+                    color: 'info',
+                    onClick: () => openModal(exam._id),
+                    'icon': 'play'
+                },
+                {
+                    to: `/exam/${exam._id}`,
+                    text: 'Editar',
+                    icon: 'square-pen',
+                    color: 'error'
+                }, 
+            ])
+        }
+    } catch (error) {
+        throw new Error(`Erro formatando as provas: ${error.message}`);
+    }
+}
+
+/**
+ * Abre o modal de gerenciar liberações
+ */
+const openModal = async (examId) => {
+    const instance = modal.open({ examId: examId });
+
+    const result = await instance.result;
+
+    // se retornou null usuário fechou antes de qualquer ação
+    if (result === null) {
+        return;
+    }
+
+    handleModalClose(result.success);
+}
+
+/**
+ * Lida com o fechamento do modal de liberar prova, 
+ * vai fazer um toast aparecer avisando o estado ao usuário
+ * 
+ * @param result se deu certo liberar a prova
+ */
+const handleModalClose = async (result) => {
+    const toast = useToast();
+
+    let toastProps = null
+
+    if (result) {
+        toastProps = {
+            title: 'Prova liberada com sucesso! Alunos já podem responder.',
+            color: "primary",
+            icon: "i-lucide-check"
+        }
+    } else {
+        toastProps = {
+            title: 'Erro liberando a prova!',
+            description: "Aconteceu um erro interno, recarregue e tente novamente. Persistindo contate desenvolvedor.",
+            color: "error",
+            icon: "i-lucide-x"
+        }
+    }
+
+    toast.add(toastProps);
+}
+</script>
